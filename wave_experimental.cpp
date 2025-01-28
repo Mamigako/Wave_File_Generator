@@ -92,7 +92,7 @@ int swap_endian_int(int integer) {
 
 void generate_sine_wave(short *buffer, double frequency, int numSamples, int sampleRate) {
     for (int i = 0; i < numSamples; i++) {
-        double sample = cos(2.0 * M_PI * frequency * i / sampleRate);
+        double sample = sin(M_PI * frequency * i / sampleRate);
         buffer[i] = (short int)(sample * 32767); // Scale to 16-bit range
     }
 }
