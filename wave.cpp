@@ -47,11 +47,13 @@ void set_header(wavheader_t &wav_head, int sampleRate, int noChannels, int bitsS
 }
 
 int main (int argc, char *argv[]) {
-    std::ofstream outfile;
-    wavheader_t wav_head;
-    set_header(wav_head, 44100, 1, 16, 0.5);
-    outfile.open("header_test.wav", std::ios::binary);
-    outfile.write(reinterpret_cast<char *>(&wav_head), sizeof(wavheader_t));
-    outfile.close();
+    std::ofstream outfile; // Initialize write file object.
+    wavheader_t wav_head; // Initialize header.
+    set_header(wav_head, 44100, 1, 16, 0.5); // Set header with default values.
+    outfile.open("header_test.wav", std::ios::binary); // Open writefile in binary mode.
+    outfile.write(reinterpret_cast<char *>(&wav_head), sizeof(wavheader_t)); 
+    // cast address of header into char pointer in order to write to binary file.
+    // Specify the size fo the data to write (in this case the whole header.)
+    outfile.close(); // Close writefile.
     return 0;
 }
