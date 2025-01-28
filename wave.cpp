@@ -38,9 +38,12 @@ void set_header(wavheader_t &wav_head, int sampleRate, int noChannels, int bitsS
     wav_head.sampleRate = sampleRate; // eg. 44100
     wav_head.byteRate = sampleRate * noChannels * bitsSample/8; // Bytes per second
     wav_head.blockAlign = noChannels * bitsSample/8; // Calculate the number of bytes for one audio frame
-    wav_head.bitsPerSample = bitsSample;
-    wav_head.subChunk2Size = numSamples * noChannels * bitsSample/8;
-    wav_head.chunkSize = 4 + (8 + wav_head.subChunk1Size) + (8 + wav_head.subChunk2Size);
+    wav_head.bitsPerSample = bitsSample; // 16
+    wav_head.subChunk2Size = numSamples * noChannels * bitsSample/8; // Data Subchunk, calculates the size of audio data in bytes
+    wav_head.chunkSize = 4 + (8 + wav_head.subChunk1Size) + (8 + wav_head.subChunk2Size); 
+    //Total size of RIFF chunk(4bytes for "WAVE", 8 bytes for "fmt" subchnunk header, 
+    //8 bytes for "data" subchunk header, actual sizes of "fmt" and "data")
+
 }
 
 int main (int argc, char *argv[]) {
