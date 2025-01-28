@@ -38,26 +38,26 @@ double calculate_frequency(char note, int octave, bool isSharp) {
     int noteIndex;
     switch (note) {
         case 'a':
-        noteIndex = 0;
-        break;
+            noteIndex = 0;
+            break;
         case 'b': 
-        noteIndex = 1; 
-        break;
+            noteIndex = 1; 
+            break;
         case 'c': 
-        noteIndex = 2; 
-        break;
+            noteIndex = 2; 
+            break;
         case 'd': 
-        noteIndex = 3; 
-        break;
+            noteIndex = 3; 
+            break;
         case 'e': 
-        noteIndex = 4; 
-        break;
+            noteIndex = 4; 
+            break;
         case 'f': 
-        noteIndex = 5; 
-        break;
+            noteIndex = 5; 
+            break;
         case 'g': 
-        noteIndex = 6; 
-        break;
+            noteIndex = 6; 
+            break;
 
         default: noteIndex = 0; break;
     }
@@ -139,9 +139,6 @@ int main (int argc, char *argv[]) {
     // cast address of header into char pointer in order to write to binary file.
     // Specify the size fo the data to write (in this case the whole header.)
     generate_sine_wave(buffer, 440, 22050, 1);
-    //outfile.close(); // Close writefile.
-    
-    //outfile.open("header_test.wav", std::ios::binary | std::ios::app);
     outfile.write(reinterpret_cast<char*>(buffer), sizeof(int)*(44100*0.5));
     outfile.close(); // Close writefile.
     return 0;
