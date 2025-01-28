@@ -36,7 +36,8 @@ struct wavheader_t {
 double calculate_frequency(char note, int octave, bool isSharp) {
     double baseFrequencies[] = {440, 494, 523, 587, 659, 698, 784};
     int noteIndex;
-    switch (note) {
+    switch (note) 
+    {
         case 'a':
             noteIndex = 0;
             break;
@@ -59,7 +60,8 @@ double calculate_frequency(char note, int octave, bool isSharp) {
             noteIndex = 6; 
             break;
 
-        default: noteIndex = 0; break;
+        default: noteIndex = 0;
+            break;
     }
 
     double frequency = baseFrequencies[noteIndex];
