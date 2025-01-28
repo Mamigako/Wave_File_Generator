@@ -134,12 +134,15 @@ int main (int argc, char *argv[]) {
     std::ofstream outfile; // Initialize write file object.
     wavheader_t wav_head; // Initialize header.
     set_header(wav_head, 44100, 1, 16, 0.5); // Set header with default values.
+    
     outfile.open("header_test.wav", std::ios::binary); // Open writefile in binary mode.
-    outfile.write(reinterpret_cast<char *>(&wav_head), sizeof(wavheader_t)); 
-    // cast address of header into char pointer in order to write to binary file.
-    // Specify the size fo the data to write (in this case the whole header.)
-    generate_sine_wave(buffer, 440, 22050, 1);
-    outfile.write(reinterpret_cast<char*>(buffer), sizeof(int)*(44100*0.5));
+        outfile.write(reinterpret_cast<char *>(&wav_head), sizeof(wavheader_t)); 
+
+        // cast address of header into char pointer in order to write to binary file.
+        // Specify the size fo the data to write (in this case the whole header.)
+        generate_sine_wave(buffer, 440, 22050, 1);
+        outfile.write(reinterpret_cast<char*>(buffer), sizeof(int)*(44100*0.5));
+
     outfile.close(); // Close writefile.
     return 0;
 }
