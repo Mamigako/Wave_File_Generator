@@ -1,4 +1,7 @@
 #include <fstream>
+#include <cmath>
+
+const int maxNotes = 500;
 
 struct wavheader_t {
     unsigned char RIFF[4];
@@ -27,6 +30,46 @@ struct wavheader_t {
         }
     }
 };
+
+
+double calculate_frequency(char note, int octave, bool isSharp) {
+    double baseFrequencuies[] = {440, 466, 494, 523, 554, 587, 622, 659, 698, 740, 784, 831, 880};
+    int noteIndex;
+    switch (note) {
+        case 'a':
+        noteIndex = 7;
+        break;
+        case 'b': 
+        noteIndex = 1; 
+        break;
+        case 'c': 
+        noteIndex = 2; 
+        break;
+        case 'd': 
+        noteIndex = 3; 
+        break;
+        case 'e': 
+        noteIndex = 4; 
+        break;
+        case 'f': 
+        noteIndex = 5; 
+        break;
+        case 'g': 
+        noteIndex = 6; 
+        break;
+
+        default: noteIndex = 0; break;
+    }
+
+    double frequency = baseFrequencuies[noteIndex];
+    if (isSharp) {
+        frequency *= pow(2, 1 / 12);
+    }
+    return frequency * pow(2, octave - 1);
+
+}
+
+
 
 void set_header(wavheader_t &wav_head, int sampleRate, int noChannels, int bitsSample, double sampleDuration){
     int pmc_size = 16;
