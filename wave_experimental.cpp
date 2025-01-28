@@ -32,7 +32,6 @@ struct wavheader_t {
     }
 };
 
-
 double calculate_frequency(char note, int octave, bool isSharp) {
     double baseFrequencies[] = {440, 494, 523, 587, 659, 698, 784};
     int noteIndex;
@@ -88,18 +87,12 @@ int swap_endian_int(int integer) {
 
 }
 
-
-
 void generate_sine_wave(short *buffer, double frequency, int numSamples, int sampleRate) {
     for (int i = 0; i < numSamples; i++) {
-        double sample = sin(M_PI * frequency * i / sampleRate);
+        double sample = cos(M_PI * frequency * i / sampleRate);
         buffer[i] = (short int)(sample * 32767); // Scale to 16-bit range
     }
 }
-
-
-
-
 
 void set_header(wavheader_t &wav_head, int sampleRate, int noChannels, int bitsSample, double sampleDuration){
     int pmc_size = 16;
