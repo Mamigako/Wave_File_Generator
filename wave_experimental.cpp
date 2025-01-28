@@ -64,7 +64,7 @@ double calculate_frequency(char note, int octave, bool isSharp) {
 
     double frequency = baseFrequencies[noteIndex];
     if (isSharp) {
-        frequency *= pow(2, 1 / 12);
+        frequency *= pow(2, 1.0 / 12.0);
     }
     return frequency * pow(2, octave - 1);
 
@@ -90,16 +90,13 @@ int swap_endian_int(int integer) {
 
 
 
-void generate_sine_wave(short int *buffer, double frequency, int numSamples, int duration) {
-
+void generate_sine_wave(short *buffer, double frequency, int numSamples, int sampleRate) {
     for (int i = 0; i < numSamples; i++) {
-    
-        double sample;
-        sample = frequency * i * (3.142/(numSamples/duration));
-        sample = std::sin(sample); //sample rate.
-        buffer[i] = swap_endian_int((short int) (sample * 32767));
+        double sample = cos(2.0 * M_PI * frequency * i / sampleRate);
+        buffer[i] = (short int)(sample * 32767); // Scale to 16-bit range
     }
 }
+
 
 
 
@@ -122,27 +119,31 @@ void set_header(wavheader_t &wav_head, int sampleRate, int noChannels, int bitsS
 
 }
 
-int main (int argc, char *argv[]) {
-    
-    short int buffer[50000];
+int main(int argc, char *argv[]) {
+    const int SAMPLE_RATE = 44100;
+    const int BITS_PER_SAMPLE = 16;
 
-    //if (argc < 2)
-    
-    //{std::cout << "Yo dis shiet wack!\n";
-    //return 1;}
+    // Number of samples for 0.5 seconds
+    int numSamples = SAMPLE_RATE * 0.5;
+    short int buffer[numSamples];
 
-    std::ofstream outfile; // Initialize write file object.
-    wavheader_t wav_head; // Initialize header.
-    set_header(wav_head, 44100, 1, 16, 0.5); // Set header with default values.
-    outfile.open("header_test.wav", std::ios::binary); // Open writefile in binary mode.
-    outfile.write(reinterpret_cast<char *>(&wav_head), sizeof(wavheader_t)); 
-    // cast address of header into char pointer in order to write to binary file.
-    // Specify the size fo the data to write (in this case the whole header.)
-    generate_sine_wave(buffer, 440, 22050, 1);
-    //outfile.close(); // Close writefile.
-    
-    //outfile.open("header_test.wav", std::ios::binary | std::ios::app);
-    outfile.write(reinterpret_cast<char*>(buffer), sizeof(int)*(44100*0.5));
-    outfile.close(); // Close writefile.
+    // Generate sine wave (440 Hz for 0.5 seconds)
+    generate_sine_wave(buffer, 440, numSamples, SAMPLE_RATE);
+
+    // Initialize WAV header
+    wavheader_t wav_head;
+    double sampleDuration = numSamples / (double)SAMPLE_RATE;
+    set_header(wav_head, SAMPLE_RATE, 1, BITS_PER_SAMPLE, sampleDuration);
+
+    // Open output file
+    std::ofstream outfile("header_test.wav", std::ios::binary);
+
+    // Write header and audio data
+    outfile.write(reinterpret_cast<char *>(&wav_head), sizeof(wavheader_t));
+    outfile.write(reinterpret_cast<char *>(buffer), numSamples * sizeof(short int));
+
+    outfile.close();
+    std::cout << "WAV file generated successfully." << std::endl;
+
     return 0;
 }
