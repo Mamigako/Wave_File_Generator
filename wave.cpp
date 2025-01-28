@@ -31,13 +31,13 @@ struct wavheader_t {
 void set_header(wavheader_t &wav_head, int sampleRate, int noChannels, int bitsSample, double sampleDuration){
     int pmc_size = 16;
     short int pmc = 1;
-    int numSamples = sampleDuration * sampleRate;
-    wav_head.subChunk1Size = pmc_size;
-    wav_head.audioFormat = pmc;
-    wav_head.numChannels = noChannels;
-    wav_head.sampleRate = sampleRate;
-    wav_head.byteRate = sampleRate * noChannels * bitsSample/8;
-    wav_head.blockAlign = noChannels * bitsSample/8;
+    int numSamples = sampleDuration * sampleRate; // 0.5 * 44100
+    wav_head.subChunk1Size = pmc_size; // 16 bytes
+    wav_head.audioFormat = pmc; // 1 (Pulse Code Modulation) 
+    wav_head.numChannels = noChannels; // 1 for Mono
+    wav_head.sampleRate = sampleRate; // eg. 44100
+    wav_head.byteRate = sampleRate * noChannels * bitsSample/8; // Bytes per second
+    wav_head.blockAlign = noChannels * bitsSample/8; // Calculate the number of bytes for one audio frame
     wav_head.bitsPerSample = bitsSample;
     wav_head.subChunk2Size = numSamples * noChannels * bitsSample/8;
     wav_head.chunkSize = 4 + (8 + wav_head.subChunk1Size) + (8 + wav_head.subChunk2Size);
