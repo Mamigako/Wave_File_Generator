@@ -114,16 +114,12 @@ int main (int argc, char *argv[]) {
     int numSamples = SAMPLE_RATE * duration;
     short int buffer[220500];
 
-    // Initialize WAV header
     wavheader_t wav_head; // Initialize header.
-    set_header(wav_head, 44100, 1, 16, duration); // Set header with default values.
+    set_header(wav_head, 44100, 1, 16, duration); // Set header with default values
     
-    // Generate sine wave (440 Hz for 0.5 seconds)
     generate_sine_wave(buffer, frequency, numSamples, SAMPLE_RATE);
 
-    // Open output file
     std::ofstream outfile; // Initialize write file object.
-
     outfile.open(file_name, std::ios::binary); // Open writefile in binary mode.
     outfile.write(reinterpret_cast<char *>(&wav_head), sizeof(wavheader_t)); 
     outfile.write(reinterpret_cast<char*>(buffer), numSamples * sizeof(short int));

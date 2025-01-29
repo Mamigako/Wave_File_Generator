@@ -2,8 +2,6 @@
 #include <cmath>
 #include <iostream>
 
-
-
 struct wavheader_t {
     unsigned char RIFF[4];
     unsigned int chunkSize;
@@ -31,7 +29,6 @@ struct wavheader_t {
         }
     }
 };
-
 
 void generate_sine_wave(short *buffer, double frequency, int numSamples, int sampleRate) {
     for (int i = 0; i < numSamples; i++) {
@@ -71,13 +68,9 @@ int main(int argc, char *argv[]) {
     wavheader_t wav_head;
     set_header(wav_head, SAMPLE_RATE, 1, BITS_PER_SAMPLE, sampleDuration);
 
-    // Generate sine wave (440 Hz for 0.5 seconds)
     generate_sine_wave(buffer, 440, numSamples, SAMPLE_RATE);
 
-    // Open output file
     std::ofstream outfile("header_test.wav", std::ios::binary);
-
-    // Write header and audio data
     outfile.write(reinterpret_cast<char *>(&wav_head), sizeof(wavheader_t));
     outfile.write(reinterpret_cast<char *>(buffer), numSamples * sizeof(short int));
 
