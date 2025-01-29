@@ -33,43 +33,6 @@ struct wavheader_t {
 };
 
 
-double calculate_frequency(char note, int octave, bool isSharp) {
-    double baseFrequencies[] = {440, 494, 523, 587, 659, 698, 784};
-    int noteIndex;
-    switch (note) {
-        case 'a':
-            noteIndex = 0;
-            break;
-        case 'b': 
-            noteIndex = 1; 
-            break;
-        case 'c': 
-            noteIndex = 2; 
-            break;
-        case 'd': 
-            noteIndex = 3; 
-            break;
-        case 'e': 
-            noteIndex = 4; 
-            break;
-        case 'f': 
-            noteIndex = 5; 
-            break;
-        case 'g': 
-            noteIndex = 6; 
-            break;
-
-        default: noteIndex = 0; break;
-    }
-
-    double frequency = baseFrequencies[noteIndex];
-    if (isSharp) {
-        frequency *= pow(2, 1 / 12);
-    }
-    return frequency * pow(2, octave - 1);
-
-}
-
 int swap_endian_int(int integer) {
 
     int first_byte_mask = 0xff000000;
