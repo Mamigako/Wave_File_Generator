@@ -1,7 +1,7 @@
+#include <cstring>
 #include <fstream>
 #include <cmath>
 #include <iostream>
-
 
 
 struct wavheader_t {
@@ -52,19 +52,15 @@ int swap_endian_int(int integer) {
 }
 
 
-
 void generate_sine_wave(short int *buffer, double frequency, int numSamples, int duration) {
 
     for (int i = 0; i < numSamples; i++) {
-    
         double sample;
         sample = frequency * i * (3.142/(numSamples/duration));
         sample = std::sin(sample); //sample rate.
         buffer[i] = swap_endian_int((short int) (sample * 32767));
     }
 }
-
-
 
 
 void set_header(wavheader_t &wav_head, int sampleRate, int noChannels, int bitsSample, double sampleDuration){
@@ -86,13 +82,7 @@ void set_header(wavheader_t &wav_head, int sampleRate, int noChannels, int bitsS
 }
 
 int main (int argc, char *argv[]) {
-    
     short int buffer[50000];
-
-    //if (argc < 2)
-    
-    //{std::cout << "Yo dis shiet wack!\n";
-    //return 1;}
 
     std::ofstream outfile; // Initialize write file object.
     wavheader_t wav_head; // Initialize header.
