@@ -71,6 +71,7 @@ double calculate_frequency(char note, int octave, bool isSharp) {
 }
 
 int swap_endian_int(int integer) {
+
     int first_byte_mask = 0xff000000;
     int second_byte_mask = 0x00ff0000;
     int third_byte_mask = 0x0000ff00;
@@ -84,6 +85,7 @@ int swap_endian_int(int integer) {
     int final_int = first_int | second_int | third_int | fourth_int;
 
     return final_int;
+
 }
 
 
@@ -93,7 +95,7 @@ void generate_sine_wave(short int *buffer, double frequency, int numSamples, int
     for (int i = 0; i < numSamples; i++) {
     
         double sample;
-        sample = frequency * i * (3.142/((float)numSamples/duration));
+        sample = frequency * i * (3.142/(numSamples/duration));
         sample = std::sin(sample); //sample rate.
         buffer[i] = swap_endian_int((short int) (sample * 32767));
     }
@@ -124,6 +126,10 @@ int main (int argc, char *argv[]) {
     
     short int buffer[50000];
 
+    //if (argc < 2)
+    
+    //{std::cout << "Yo dis shiet wack!\n";
+    //return 1;}
 
     std::ofstream outfile; // Initialize write file object.
     wavheader_t wav_head; // Initialize header.
