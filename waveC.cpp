@@ -91,15 +91,10 @@ int swap_endian_int(int integer) {
 }
 
 
-
-void generate_sine_wave(short int *buffer, double frequency, int numSamples, int duration) {
-
+void generate_sine_wave(short *buffer, double frequency, int numSamples, int sampleRate) {
     for (int i = 0; i < numSamples; i++) {
-    
-        double sample;
-        sample = frequency * i * (3.142/(numSamples/duration));
-        sample = std::sin(sample); //sample rate.
-        buffer[i] = swap_endian_int((short int) (sample * 32767));
+        double sample = cos(3.142 * frequency * i / sampleRate);
+        buffer[i] = (short int)(sample * 32767); // Scale to 16-bit range
     }
 }
 

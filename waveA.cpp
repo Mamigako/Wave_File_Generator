@@ -1,7 +1,7 @@
-#include <cstring>
 #include <fstream>
 #include <cmath>
 #include <iostream>
+
 
 
 struct wavheader_t {
@@ -33,35 +33,12 @@ struct wavheader_t {
 };
 
 
-int swap_endian_int(int integer) {
-
-    int first_byte_mask = 0xff000000;
-    int second_byte_mask = 0x00ff0000;
-    int third_byte_mask = 0x0000ff00;
-    int fourth_byte_mask = 0x000000ff;
-
-    int first_int = (integer & first_byte_mask) >> 24;
-    int second_int = (integer & second_byte_mask) >> 8;
-    int third_int = (integer & third_byte_mask) << 8;
-    int fourth_int = (integer & fourth_byte_mask) << 24;
-
-    int final_int = first_int | second_int | third_int | fourth_int;
-
-    return final_int;
-
-}
-
-
-void generate_sine_wave(short int *buffer, double frequency, int numSamples, int duration) {
-
+void generate_sine_wave(short *buffer, double frequency, int numSamples, int sampleRate) {
     for (int i = 0; i < numSamples; i++) {
-        double sample;
-        sample = frequency * i * (3.142/(numSamples/duration));
-        sample = std::sin(sample); //sample rate.
-        buffer[i] = swap_endian_int((short int) (sample * 32767));
+        double sample = cos(3.142 * frequency * i / sampleRate);
+        buffer[i] = (short int)(sample * 32767); // Scale to 16-bit range
     }
 }
-
 
 void set_header(wavheader_t &wav_head, int sampleRate, int noChannels, int bitsSample, double sampleDuration){
     int pmc_size = 16;
@@ -81,21 +58,31 @@ void set_header(wavheader_t &wav_head, int sampleRate, int noChannels, int bitsS
 
 }
 
-int main (int argc, char *argv[]) {
-    short int buffer[50000];
+int main(int argc, char *argv[]) {
+    const int SAMPLE_RATE = 44100;
+    const int BITS_PER_SAMPLE = 16;
+    double sampleDuration = 0.5;
 
-    std::ofstream outfile; // Initialize write file object.
-    wavheader_t wav_head; // Initialize header.
-    set_header(wav_head, 44100, 1, 16, 0.5); // Set header with default values.
-    
-    outfile.open("header_test.wav", std::ios::binary); // Open writefile in binary mode.
-        outfile.write(reinterpret_cast<char *>(&wav_head), sizeof(wavheader_t)); 
+    // Number of samples for 0.5 seconds
+    int numSamples = SAMPLE_RATE * sampleDuration;
+    short int buffer[numSamples];
 
-        // cast address of header into char pointer in order to write to binary file.
-        // Specify the size fo the data to write (in this case the whole header.)
-        generate_sine_wave(buffer, 440, 22050, 1);
-        outfile.write(reinterpret_cast<char*>(buffer), sizeof(int)*(44100*0.5));
+    // Initialize WAV header
+    wavheader_t wav_head;
+    set_header(wav_head, SAMPLE_RATE, 1, BITS_PER_SAMPLE, sampleDuration);
 
-    outfile.close(); // Close writefile.
+    // Generate sine wave (440 Hz for 0.5 seconds)
+    generate_sine_wave(buffer, 440, numSamples, SAMPLE_RATE);
+
+    // Open output file
+    std::ofstream outfile("header_test.wav", std::ios::binary);
+
+    // Write header and audio data
+    outfile.write(reinterpret_cast<char *>(&wav_head), sizeof(wavheader_t));
+    outfile.write(reinterpret_cast<char *>(buffer), numSamples * sizeof(short int));
+
+    outfile.close();
+    std::cout << "WAV file generated successfully." << std::endl;
+
     return 0;
 }
