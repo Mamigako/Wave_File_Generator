@@ -1,7 +1,7 @@
+#include <cstring>
 #include <fstream>
 #include <cmath>
 #include <iostream>
-
 
 
 struct wavheader_t {
@@ -99,8 +99,6 @@ void generate_sine_wave(short *buffer, double frequency, int numSamples, int sam
 }
 
 
-
-
 void set_header(wavheader_t &wav_head, int sampleRate, int noChannels, int bitsSample, double sampleDuration){
     int pmc_size = 16;
     short int pmc = 1;
@@ -119,27 +117,77 @@ void set_header(wavheader_t &wav_head, int sampleRate, int noChannels, int bitsS
 
 }
 
+
 int main (int argc, char *argv[]) {
-    
-    short int buffer[50000];
+    char file_name[37];
+    int frequency;
+    float duration;
 
-    //if (argc < 2)
-    
-    //{std::cout << "Yo dis shiet wack!\n";
-    //return 1;}
+    switch (argc) {
+        case 1:
+            std::cout << "# Input file name: ";
+            std::cin >> file_name;
+            std::strcat(file_name, ".wav");
 
-    std::ofstream outfile; // Initialize write file object.
+            std::cout << "\n# Enter the frequency (in Hz): ";
+            std::cin >> frequency;
+
+            std::cout << "\n# Enter the frequency duration: ";
+            std::cin >> duration;
+
+            break;
+
+        case 2:
+            std::strncpy(file_name, argv[1], strlen(argv[1]) + 1);
+            std::strcat(file_name, ".wav");
+
+            std::cout << "\n# Enter the frequency (in Hz): ";
+            std::cin >> frequency;
+
+            std::cout << "\n# Enter the frequency duration: ";
+            std::cin >> duration;
+            break;
+
+        case 3:
+            std::strncpy(file_name, argv[1], strlen(argv[1]) + 1);
+            std::strcat(file_name, ".wav");
+
+            frequency = atoi(argv[2]);
+            std::cout << "\n# Enter the frequency duration: ";
+            std::cin >> duration;
+            break;
+
+        case 4:
+            std::strncpy(file_name, argv[1], strlen(argv[1]) + 1);
+            std::strcat(file_name, ".wav");
+
+            frequency = atoi(argv[2]);
+            duration = atof(argv[3]);
+            break;
+    }
+
+    const int SAMPLE_RATE = 44100;
+    const int BITS_PER_SAMPLE = 16;
+
+    int numSamples = SAMPLE_RATE * duration;
+    short int buffer[220500];
+
+    // Initialize WAV header
     wavheader_t wav_head; // Initialize header.
-    set_header(wav_head, 44100, 1, 16, 0.5); // Set header with default values.
+    set_header(wav_head, 44100, 1, 16, duration); // Set header with default values.
     
-    outfile.open("header_test.wav", std::ios::binary); // Open writefile in binary mode.
-        outfile.write(reinterpret_cast<char *>(&wav_head), sizeof(wavheader_t)); 
+    // Generate sine wave (440 Hz for 0.5 seconds)
+    generate_sine_wave(buffer, frequency, numSamples, SAMPLE_RATE);
 
-        // cast address of header into char pointer in order to write to binary file.
-        // Specify the size fo the data to write (in this case the whole header.)
-        generate_sine_wave(buffer, 440, 22050, 1);
-        outfile.write(reinterpret_cast<char*>(buffer), sizeof(int)*(44100*0.5));
+    // Open output file
+    std::ofstream outfile; // Initialize write file object.
+
+    outfile.open(file_name, std::ios::binary); // Open writefile in binary mode.
+    outfile.write(reinterpret_cast<char *>(&wav_head), sizeof(wavheader_t)); 
+    outfile.write(reinterpret_cast<char*>(buffer), numSamples * sizeof(short int));
 
     outfile.close(); // Close writefile.
+    std::cout << "WAV file generated successfully." << std::endl;
+
     return 0;
 }
