@@ -1,6 +1,6 @@
-## Wave File Generator
-# We implemented version (A, B , and C) and we would like C to be graded.
-# In order to compile the program type in the following in the terminal:
+# Wave File Generator
+## We implemented version (A, B , and C) and we would like C to be graded.
+## In order to compile the program type in the following in the terminal:
 ´´´bash
 g++ waveC.cpp -o waveC
 ´´´
